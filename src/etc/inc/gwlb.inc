@@ -210,15 +210,16 @@ EOD;
             }
 
             /*
-             * 'monitor' has been set, so makes sure it has precedence over
-             * 'gateway' in defining the source IP. Otherwise if 'gateway'
-             * is a local link and 'monitor' is global routable then the
-             * ICMP6 response would not find its way back home...
+             * If gateway is a local link and 'monitor' is global routable
+             * then the ICMP6 response would not find its way back home.
              */
-            if (is_linklocal($gateway['monitor']) && !strstr($gateway['monitor'], '%')) {
+            if (is_linklocal($gateway['monitor']) && strpos($gateway['monitor'], '%') === false) {
                 $gateway['monitor'] .= "%{$gateway['interface']}";
             }
-            if (is_linklocal($gwifip) && !strstr($gwifip, '%')) {
+            if (is_linklocal($gateway['gateway']) && strpos($gateway['gateway'], '%') === false) {
+                $gateway['gateway'] .= "%{$gateway['interface']}";
+            }
+            if (is_linklocal($gwifip) && strpos($gwifip, '%') === false) {
                 $gwifip .= "%{$gateway['interface']}";
             }
 
